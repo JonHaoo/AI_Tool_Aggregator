@@ -1,0 +1,12 @@
+name = "rtasr-gateway"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# 开发服务器配置
+[dev]
+port = 8787
+local_protocol = "http"
+
+# 非敏感运行配置。密钥仅允许放在 .dev.vars 或 Cloudflare Secret，禁止写入此文件。
+[vars]
+BILLING_API_URL = "http://localhost:3030"

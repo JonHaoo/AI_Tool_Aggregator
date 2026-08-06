@@ -1,0 +1,6 @@
+{
+  "regions": ["hkg1"],
+  "buildCommand": "pnpm turbo build --filter=@repo/web",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "outputDirectory": "apps/web/.next"
+}

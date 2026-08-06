@@ -1,0 +1,106 @@
+import type { Config } from 'tailwindcss';
+import tailwindcssAnimate from 'tailwindcss-animate';
+import tailwindcssTypography from '@tailwindcss/typography';
+
+const config: Config = {
+  darkMode: 'class',
+  content: [
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
+    extend: {
+      fontFamily: {
+        sans: ['var(--font-dm-sans)', 'sans-serif'],
+        heading: ['var(--font-space-grotesk)', 'sans-serif'],
+      },
+      colors: {
+        'dark-bg': '#0A0E27',
+        'dark-surface': '#1a1f3a',
+        'dark-card': '#252b4a',
+        'dark-border': '#2d3454',
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        ds: {
+          'bg-black': 'var(--ds-bg-black)',
+          'bg-soft': 'var(--ds-bg-soft)',
+          'text-primary': 'var(--ds-text-primary)',
+          'text-inverse': 'var(--ds-text-inverse)',
+          'accent-blue': 'var(--ds-accent-blue)',
+          'link-blue': 'var(--ds-link-blue)',
+          'link-blue-dark': 'var(--ds-link-blue-dark)',
+          'glass-white-strong': 'var(--ds-glass-white-strong)',
+          'glass-white': 'var(--ds-glass-white)',
+          'glass-dark': 'var(--ds-glass-dark)',
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        /** AI 头像外层光晕：柔和呼吸 */
+        "avatar-glow-breathe": {
+          "0%, 100%": { opacity: "0.32", transform: "scale(0.94)" },
+          "50%": { opacity: "0.62", transform: "scale(1.06)" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "avatar-glow-breathe": "avatar-glow-breathe 3.4s ease-in-out infinite",
+      },
+    },
+  },
+  plugins: [tailwindcssAnimate, tailwindcssTypography],
+};
+
+export default config;

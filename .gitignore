@@ -1,0 +1,69 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Testing
+coverage
+*.log
+
+# Next.js
+.next/
+out/
+build
+dist/
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env
+.env*.local
+
+# Vercel
+.vercel
+
+# Turbo
+.turbo
+
+# TypeScript
+*.tsbuildinfo
+
+# Prisma
+*.db
+*.db-journal
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
+
+# Claude AI
+.claude/
+.claude.md
+
+# 本地产物
+.pnpm-store/
+.codefree/
+downcode/
+infra/worker-rtasr/.wrangler/
+infra/worker-rtasr/.dev.vars
+apps/web/ark-response-debug.json
+.playwright-mcp*
+.codegraph*
+.codex*
+.agents*
+.claude*
+dump.rdb*
+.dev-flow*
+.env*

@@ -1,0 +1,457 @@
+'use client';
+
+import mingliIcon from '@/assets/image/mingli.svg';
+import React from 'react';
+import { useState } from 'react';
+import type { CSSProperties } from 'react';
+import type { SVGProps } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import {
+  Bot,
+  AudioWaveform,
+  PenTool,
+  Presentation,
+  FileText,
+  Scale,
+  Code,
+  Video,
+  Box,
+  Pin,
+  X,
+  Plus,
+  MessageSquare,
+} from 'lucide-react';
+
+function AssetAppIcon({
+  className,
+  src,
+}: {
+  className?: string;
+  src: { src: string };
+  strokeWidth?: number;
+}) {
+  const maskStyle = {
+    WebkitMaskImage: `url(${src.src})`,
+    maskImage: `url(${src.src})`,
+    WebkitMaskRepeat: 'no-repeat',
+    maskRepeat: 'no-repeat',
+    WebkitMaskPosition: 'center',
+    maskPosition: 'center',
+    WebkitMaskSize: 'contain',
+    maskSize: 'contain',
+  } satisfies CSSProperties;
+
+  return (
+    <span
+      aria-hidden="true"
+      className={cn('block shrink-0 bg-current', className)}
+      style={maskStyle}
+    />
+  );
+}
+
+function MingliIcon({ className }: { className?: string; strokeWidth?: number }) {
+  return <AssetAppIcon src={mingliIcon} className={className} />;
+}
+
+function BaguaIcon({ className, strokeWidth = 1.9, ...props }: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+      {...props}
+    >
+      <circle cx="12" cy="12" r="8.5" opacity="0.2" />
+      <circle cx="12" cy="12" r="6.1" opacity="0.3" />
+      <path d="M12 3.5v1.55" />
+      <path d="M12 18.95v1.55" />
+      <path d="M3.5 12h1.55" />
+      <path d="M18.95 12h1.55" />
+      <path d="M6.05 6.05l1.15 1.15" />
+      <path d="M16.8 16.8l1.15 1.15" />
+      <path d="M17.95 6.05l-1.15 1.15" />
+      <path d="M7.2 16.8l-1.15 1.15" />
+      <path d="M12 6.4v11.2" opacity="0.5" />
+      <path d="M6.4 12h11.2" opacity="0.5" />
+      <path d="M8.25 8.25h1.55" />
+      <path d="M14.2 8.25h1.55" />
+      <path d="M8.25 15.75h1.55" />
+      <path d="M14.2 15.75h1.55" />
+      <path d="M8.15 10.1h1.65" />
+      <path d="M14.2 10.1h1.65" />
+      <path d="M8.15 13.9h1.65" />
+      <path d="M14.2 13.9h1.65" />
+      <circle cx="12" cy="12" r="1.75" />
+      <path d="M12 8.9l1.55 1.55" />
+      <path d="M13.55 13.55L12 15.1" />
+      <path d="M10.45 13.55L8.9 12" />
+      <path d="M10.45 10.45L12 8.9" />
+    </svg>
+  );
+}
+
+export type AppId =
+  | 'chat'
+  | 'voice'
+  | 'image'
+  | 'destiny'
+  | 'ppt'
+  | 'resume'
+  | 'legal'
+  | 'code'
+  | 'video'
+  | '3d'
+  | 'feedback';
+
+interface AppConfig {
+  id: AppId;
+  label: string;
+  description: string;
+  disabledDescription?: string;
+  icon: React.ElementType;
+  category: 'core' | 'productivity' | 'creative';
+  href: string;
+  iconColor: string;
+  iconBg: string;
+  disabled?: boolean;
+  sidebarPinEnabled?: boolean;
+}
+
+export const DISABLED_APP_IDS: AppId[] = ['ppt', 'legal', 'code', '3d'];
+
+export function isSidebarPinAllowed(appId: AppId) {
+  return !DISABLED_APP_IDS.includes(appId);
+}
+
+export const APP_CONFIGS: AppConfig[] = [
+  // 核心能力
+  {
+    id: 'chat',
+    label: '智能对话',
+    description: '基于最新大模型的深度逻辑推理与多轮对话。',
+    icon: Bot,
+    category: 'core',
+    href: '/chat',
+    iconColor: 'text-indigo-500',
+    iconBg: 'bg-indigo-100 dark:bg-indigo-900/30',
+  },
+  {
+    id: 'voice',
+    label: '语音转写',
+    description: '高精度语音识别，支持多语种会议纪要生成。',
+    icon: AudioWaveform,
+    category: 'core',
+    href: '/voice',
+    iconColor: 'text-violet-500',
+    iconBg: 'bg-violet-100 dark:bg-violet-900/30',
+  },
+  {
+    id: 'image',
+    label: '灵感绘图',
+    description: '文生图、图生图，释放无限视觉创意。',
+    icon: PenTool,
+    category: 'core',
+    href: '/image',
+    iconColor: 'text-fuchsia-500',
+    iconBg: 'bg-fuchsia-100 dark:bg-fuchsia-900/30',
+  },
+  {
+    id: 'destiny',
+    label: 'AI 命理大师',
+    description: '可视化排盘 + 深度报告 + 专属 AI 顾问。',
+    icon: MingliIcon,
+    category: 'core',
+    href: '/destiny',
+    iconColor: 'text-indigo-600',
+    iconBg: 'bg-indigo-100 dark:bg-indigo-900/30',
+  },
+  // 生产力工具
+  {
+    id: 'ppt',
+    label: 'PPT 制作',
+    description: '一键生成演示文稿。',
+    disabledDescription: '功能开发中，暂不支持访问。',
+    icon: Presentation,
+    category: 'productivity',
+    href: '/ppt',
+    iconColor: 'text-amber-500',
+    iconBg: 'bg-amber-100 dark:bg-amber-900/30',
+    disabled: true,
+    sidebarPinEnabled: false,
+  },
+  {
+    id: 'resume',
+    label: '简历制作',
+    description: '智能排版与内容优化。',
+    icon: FileText,
+    category: 'productivity',
+    href: '/resume',
+    iconColor: 'text-emerald-500',
+    iconBg: 'bg-emerald-100 dark:bg-emerald-900/30',
+  },
+  {
+    id: 'legal',
+    label: '法律顾问',
+    description: '合同审查与法律咨询。',
+    disabledDescription: '功能开发中，暂不支持添加到左侧导航。',
+    icon: Scale,
+    category: 'productivity',
+    href: '/legal',
+    iconColor: 'text-slate-500',
+    iconBg: 'bg-slate-100 dark:bg-slate-700/60',
+    disabled: true,
+    sidebarPinEnabled: false,
+  },
+  {
+    id: 'code',
+    label: '代码助手',
+    description: '代码解释、生成与重构。',
+    disabledDescription: '功能开发中，暂不支持添加到左侧导航。',
+    icon: Code,
+    category: 'productivity',
+    href: '/code',
+    iconColor: 'text-blue-600',
+    iconBg: 'bg-blue-100 dark:bg-blue-900/30',
+    disabled: true,
+    sidebarPinEnabled: false,
+  },
+  // 创意工具
+  {
+    id: 'video',
+    label: '视频生成',
+    description: '文字生成短视频。',
+    icon: Video,
+    category: 'creative',
+    href: '/video',
+    iconColor: 'text-indigo-500',
+    iconBg: 'bg-indigo-100 dark:bg-indigo-900/30',
+  },
+  {
+    id: '3d',
+    label: '3D 模型',
+    description: '快速生成 3D 资产。',
+    disabledDescription: '功能开发中，暂不支持添加到左侧导航。',
+    icon: Box,
+    category: 'creative',
+    href: '/3d',
+    iconColor: 'text-cyan-500',
+    iconBg: 'bg-cyan-100 dark:bg-cyan-900/30',
+    disabled: true,
+    sidebarPinEnabled: false,
+  },
+  // 用户反馈
+  {
+    id: 'feedback',
+    label: '用户反馈',
+    description: '提交问题、建议，参与产品共建。',
+    icon: MessageSquare,
+    category: 'core',
+    href: '/feedback',
+    iconColor: 'text-amber-500',
+    iconBg: 'bg-amber-100 dark:bg-amber-900/30',
+    sidebarPinEnabled: true,
+  },
+];
+
+interface AppsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  pinnedApps: AppId[];
+  onTogglePin: (id: AppId, rect?: DOMRect) => void;
+}
+
+export function AppsModal({ isOpen, onClose, pinnedApps, onTogglePin }: AppsModalProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+
+  const sections = [
+    { id: 'core', label: '核心原子能力', color: 'bg-[#6E84FA]' },
+    { id: 'productivity', label: '专业生产力', color: 'bg-[#8295FF]' },
+    { id: 'creative', label: '创意实验室', color: 'bg-[#9BAAFF]' },
+  ];
+
+  // 模糊搜索：匹配标签或描述（不区分大小写）
+  const filteredApps = APP_CONFIGS.filter((app) => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    return app.label.toLowerCase().includes(query) || app.description.toLowerCase().includes(query);
+  });
+
+  const handlePinClick = (e: React.MouseEvent, id: AppId) => {
+    e.stopPropagation();
+    const button = e.currentTarget;
+
+    // 找到图标元素以开始动画
+    // 结构：flex-row -> [图标容器, 按钮]
+    const cardHeader = button.parentElement;
+    const iconContainer = cardHeader?.firstElementChild as HTMLElement;
+
+    const rect = iconContainer
+      ? iconContainer.getBoundingClientRect()
+      : button.getBoundingClientRect();
+
+    onTogglePin(id, rect);
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-5xl bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-xl border-none shadow-2xl p-0 overflow-hidden max-h-[85vh] flex flex-col">
+        {/* 为了无障碍访问而视觉隐藏的标题 */}
+        <DialogTitle className="sr-only">应用中心</DialogTitle>
+        {/* 带有搜索框的头部 */}
+        <div className="p-6 pb-2 flex items-center justify-center">
+          <div className="relative w-2/3">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <SearchIcon className="h-5 w-5 text-slate-400" />
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="搜索您的 AI 创作工具..."
+              className="w-full pl-10 pr-10 py-3 bg-white dark:bg-slate-800 rounded-2xl border-none focus:ring-2 focus:ring-[#7E91FF]/30 text-slate-700 dark:text-slate-200 placeholder:text-slate-400 shadow-sm transition-shadow duration-300 hover:shadow-md"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-slate-700"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-6 pb-8 custom-scrollbar">
+          {filteredApps.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-slate-400">
+              <SearchIcon className="w-12 h-12 mb-4 opacity-50" />
+              <p className="text-lg">未找到匹配的应用</p>
+              <p className="text-sm mt-1">尝试搜索其他关键词</p>
+            </div>
+          ) : (
+            sections.map((section) => {
+              const sectionApps = filteredApps.filter((app) => app.category === section.id);
+              if (sectionApps.length === 0) return null;
+              return (
+                <div key={section.id} className="mb-8 last:mb-0">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className={`w-2 h-2 rounded-full ${section.color}`} />
+                    <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">
+                      {section.label}
+                    </h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {sectionApps.map((app) => {
+                      const isPinned = pinnedApps.includes(app.id);
+                      const isDisabled = app.disabled === true;
+                      return (
+                        <div
+                          key={app.id}
+                          role={isDisabled ? undefined : 'button'}
+                          tabIndex={isDisabled ? -1 : 0}
+                          aria-disabled={isDisabled}
+                          onClick={() => {
+                            if (isDisabled) return;
+                            router.push(app.href);
+                            onClose();
+                          }}
+                          onKeyDown={(e) => {
+                            if (isDisabled) return;
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              router.push(app.href);
+                              onClose();
+                            }
+                          }}
+                          className={cn(
+                            'group relative rounded-2xl p-5 transition-all duration-300 border',
+                            isDisabled
+                              ? 'bg-slate-50/95 dark:bg-slate-800/70 border-slate-200 dark:border-slate-700/50 opacity-70 cursor-not-allowed'
+                              : 'bg-white/95 dark:bg-slate-800 border-slate-100 dark:border-slate-700/50 hover:shadow-lg hover:border-[#CDD7FF] dark:hover:border-[#6277E8] cursor-pointer'
+                          )}
+                        >
+                          {isDisabled && (
+                            <span className="absolute right-5 top-5 rounded-full bg-slate-200 px-2.5 py-1 text-[11px] font-medium text-slate-500 dark:bg-slate-700 dark:text-slate-300">
+                              开发中
+                            </span>
+                          )}
+                          <div className="flex items-start justify-between mb-3">
+                            <div
+                              className={cn(
+                                'w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300',
+                                !isDisabled && 'group-hover:scale-105',
+                                app.iconBg
+                              )}
+                            >
+                              <app.icon
+                                className={cn(
+                                  'w-6 h-6',
+                                  isDisabled ? 'text-slate-400 dark:text-slate-500' : app.iconColor
+                                )}
+                              />
+                            </div>
+                            <button
+                              onClick={(e) => handlePinClick(e, app.id)}
+                              disabled={isDisabled || app.sidebarPinEnabled === false}
+                              aria-label={
+                                isDisabled ? `${app.label}功能开发中，暂不支持添加到左侧导航` : undefined
+                              }
+                              className={cn(
+                                'p-1.5 rounded-lg transition-all duration-200',
+                                (isDisabled || app.sidebarPinEnabled === false) &&
+                                  'text-slate-300 dark:text-slate-600 cursor-not-allowed hover:bg-transparent',
+                                isPinned
+                                  ? 'text-[#5D7CFA] bg-[#EAF0FF] dark:bg-[#34428A]/40'
+                                  : 'text-slate-300 hover:text-[#5D7CFA] hover:bg-[#F0F4FF] dark:hover:bg-slate-700'
+                              )}
+                            >
+                              <Pin className={cn('w-4 h-4', isPinned && 'fill-current')} />
+                            </button>
+                          </div>
+                          <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 mb-1">
+                            {app.label}
+                          </h4>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">
+                            {app.description}
+                          </p>
+                          {isDisabled && (
+                            <p className="mt-3 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                              {app.disabledDescription}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function SearchIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      />
+    </svg>
+  );
+}

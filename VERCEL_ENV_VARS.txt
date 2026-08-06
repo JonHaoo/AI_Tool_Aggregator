@@ -1,0 +1,52 @@
+# Vercel 部署环境变量模板
+
+此文件只记录变量名和配置说明，禁止填写任何真实凭证。请在 Vercel Dashboard 的 Environment Variables 中逐项配置真实值。
+
+```env
+# 数据库
+DATABASE_URL=
+
+# Redis
+REDIS_URL=
+REDIS_TLS=
+REDIS_HOST=
+REDIS_PORT=
+REDIS_PASSWORD=
+REDIS_KV_REST_API_URL=
+REDIS_KV_REST_API_TOKEN=
+REDIS_KV_REST_API_READ_ONLY_TOKEN=
+REDIS_KV_URL=
+
+# AI 服务商
+SILICONFLOW_API_KEY=
+SILICONFLOW_API_URL=
+SILICONFLOW_DEFAULT_MODEL=
+XUNFEI_API_PASSWORD=
+XUNFEI_APP_ID=
+XUNFEI_API_KEY=
+XUNFEI_API_SECRET=
+ARK_API_KEY=
+ARK_BASE_URL=
+ARK_MODEL=
+DASHSCOPE_API_KEY=
+ZHIPU_API_KEY=
+DEEPSEEK_API_KEY=
+
+# 应用与身份认证
+NEXT_PUBLIC_APP_URL=
+NEXTAUTH_URL=
+AUTH_SECRET=
+MAX_FILE_SIZE=
+ALLOWED_FILE_TYPES=
+
+# 实时语音转写。RTASR_GATEWAY_SECRET 必须与 Cloudflare Worker 的
+# RTASR_GATEWAY_SECRET 使用同一随机值，且不能写入仓库。
+NEXT_PUBLIC_RTASR_GATEWAY_URL=
+RTASR_GATEWAY_SECRET=
+```
+
+部署前请确认：
+
+1. 所有真实值仅存在于部署平台的 Secret 或 Environment Variables 中。
+2. 本地开发仅写入已被 Git 忽略的 `apps/web/.env.local`。
+3. 不要将本文件复制后提交为包含真实值的配置文件。
